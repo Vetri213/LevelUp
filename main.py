@@ -42,6 +42,7 @@ def play():
     #
     #     pygame.display.update()
     # connect it to pushup.py
+    print("fT")
     import pushup
     pushup.main()
     pygame.quit()

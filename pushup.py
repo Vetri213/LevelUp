@@ -37,8 +37,8 @@ with md_pose.Pose(min_detection_confidence=0.5,
                   min_tracking_confidence=0.5) as pose:
     while cap.isOpened():
         ret, frame = cap.read()
-        image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        image = cv2.flip(image, 1)
+        image1 = cv2.flip(frame, 1)
+        image = cv2.cvtColor(image1, cv2.COLOR_BGR2RGB)
         result = pose.process(image)
         image.flags.writeable = True
 
@@ -125,7 +125,7 @@ with md_pose.Pose(min_detection_confidence=0.5,
             cv2.putText(image, "Position: " + position, (10, 60),
                         cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
 
-        cv2.imshow("Video", image)
+        cv2.imshow("Video", image1)
         key = cv2.waitKey(1)
         if key == ord("q"):
             break
@@ -133,8 +133,7 @@ with md_pose.Pose(min_detection_confidence=0.5,
         if key == ord("s"):
             import main
             main.main()
-            cap.release()
-            cv2.destroyAllWindows()
+            break
 
 cap.release()
 cv2.destroyAllWindows()
