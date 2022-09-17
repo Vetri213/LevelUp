@@ -48,7 +48,7 @@ with md_pose.Pose(min_detection_confidence=0.5,
             landmarks = result.pose_landmarks.landmark
 
             for i in range(0, len(landmarks)):
-                if 11 <= i <= 16:
+                if 11 <= i <= 26:
                     if landmarks[i].visibility <= 0.01:
                         for j in range(0, len(landmarks)):
                             landmarks[j].x = 0
@@ -91,45 +91,35 @@ with md_pose.Pose(min_detection_confidence=0.5,
             l_back_angle = detect_angle_3(l_shoulder, l_hip, l_ankle)
             r_back_angle = detect_angle_3(r_shoulder, r_hip, r_ankle)
 
-            left_angle = detect_angle_3(l_shoulder, l_elbow, l_wrist)
-            right_angle = detect_angle_3(r_shoulder, r_elbow, r_wrist)
+            left_angle = detect_angle_3(l_shoulder, l_hip, l_knee)
+            right_angle = detect_angle_3(r_shoulder, r_hip, r_knee)
 
             # show angle on image and make animation for angle detection
 
             right = "{:.2f}".format(right_angle)
             left = "{:.2f}".format(left_angle)
 
-            cv2.putText(image1, str(left),
-                        tuple(np.multiply(l_elbow, [width, height]).astype(int)),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2,
-                        cv2.LINE_AA)
-            cv2.putText(image1, str(right),
-                        tuple(np.multiply(r_elbow, [width + 10, height + 10]).astype(int)),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2,
-                        cv2.LINE_AA)
-
-
-            left_angle2 = 0
-            if left_angle > 90:
-                left_angle2 = left_angle - 90
-            else:
-                left_angle2 = left_angle
-            if right_angle > 90:
-                right_angle2 = right_angle - 90
-            else:
-                right_angle2 = right_angle
-
-            cv2.circle(image1,
-                       tuple(np.multiply(l_elbow, [width, height]).astype(int)),
-                       20, (255, 255, 255), 1)
-            cv2.circle(image1,
-                       tuple(np.multiply(r_elbow, [width, height]).astype(int)),
-                       20, (255, 255, 255), 1)
-
-            cv2.putText(image1, "CHECK HERE",
-                        tuple(np.multiply(l_elbow, [width + 10, height + 10]).astype(int)),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2,
-                        cv2.LINE_AA)
+            # cv2.putText(image1, str(left),
+            #             tuple(np.multiply(l_elbow, [width, height]).astype(int)),
+            #             cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2,
+            #             cv2.LINE_AA)
+            # cv2.putText(image1, str(right),
+            #             tuple(np.multiply(r_elbow, [width + 10, height + 10]).astype(int)),
+            #             cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2,
+            #             cv2.LINE_AA)
+            #
+            #
+            # cv2.circle(image1,
+            #            tuple(np.multiply(l_elbow, [width, height]).astype(int)),
+            #            20, (255, 255, 255), 1)
+            # cv2.circle(image1,
+            #            tuple(np.multiply(r_elbow, [width, height]).astype(int)),
+            #            20, (255, 255, 255), 1)
+            #
+            # cv2.putText(image1, "CHECK HERE",
+            #             tuple(np.multiply(l_elbow, [width + 10, height + 10]).astype(int)),
+            #             cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2,
+            #             cv2.LINE_AA)
 
 
             # cv2.circle(image1,
@@ -138,18 +128,18 @@ with md_pose.Pose(min_detection_confidence=0.5,
             # cv2.circle(image1,
             #            tuple(np.multiply(r_elbow, [width, height]).astype(int)),
             #            int(20 * (90 - right_angle2) / 90), (255, 255, 255), -1)
-            cv2.circle(image1,
-                       tuple(np.multiply(l_shoulder, [width, height]).astype(int)),
-                       20, (255, 255, 255), 1)
-            cv2.circle(image1,
-                       tuple(np.multiply(r_shoulder, [width, height]).astype(int)),
-                       20, (255, 255, 255), 1)
-            cv2.circle(image1,
-                       tuple(np.multiply(l_wrist, [width, height]).astype(int)),
-                       20, (255, 255, 255), 1)
-            cv2.circle(image1,
-                       tuple(np.multiply(r_wrist, [width, height]).astype(int)),
-                       20, (255, 255, 255), 1)
+            # cv2.circle(image1,
+            #            tuple(np.multiply(l_shoulder, [width, height]).astype(int)),
+            #            20, (255, 255, 255), 1)
+            # cv2.circle(image1,
+            #            tuple(np.multiply(r_shoulder, [width, height]).astype(int)),
+            #            20, (255, 255, 255), 1)
+            # cv2.circle(image1,
+            #            tuple(np.multiply(l_wrist, [width, height]).astype(int)),
+            #            20, (255, 255, 255), 1)
+            # cv2.circle(image1,
+            #            tuple(np.multiply(r_wrist, [width, height]).astype(int)),
+            #            20, (255, 255, 255), 1)
 
             # Check if back is straight
             # if l_back_angle >= 130:
@@ -164,15 +154,18 @@ with md_pose.Pose(min_detection_confidence=0.5,
             #     angle = left_angle
             #     back = l_back_angle
 
-            if right_angle <= 85 and left_angle <= 85 and position == "Up":
-                position = 'Down'
+            if landmarks[12].z > landmarks[11].z:
+                angle = right_angle
+            else:
+                angle = left_angle
 
-            elif right_angle <= 85 and left_angle <= 85:
+            print(angle)
+            if angle > 120:
                 position = "Down"
-
-            elif (right_angle > 130 and left_angle > 130) and position == 'Down':
-                position = 'Up'
+            elif angle < 50 and position == "Down":
+                position = "Up"
                 counter += 1
+
                 # if l_back_angle < 150 or r_back_angle < 150:
                 #     # put text to say that back is not straight
                 #     cv2.putText(image, "Back is not straight",
