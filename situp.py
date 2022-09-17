@@ -66,19 +66,9 @@ with md_pose.Pose(min_detection_confidence=0.5,
 
             l_shoulder = [landmarks[11].x,
                           landmarks[11].y]
-            l_elbow = [landmarks[13].x,
-                       landmarks[13].y]
-            l_wrist = [landmarks[15].x,
-                       landmarks[15].y]
 
             r_shoulder = [landmarks[12].x,
                           landmarks[12].y]
-            r_elbow = [landmarks[14].x,
-                       landmarks[14].y]
-            r_wrist = [landmarks[16].x,
-                       landmarks[16].y]
-
-
 
             r_hip = [landmarks[24].x, landmarks[24].y]
             r_knee = [landmarks[26].x, landmarks[26].y]
