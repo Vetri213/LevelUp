@@ -185,7 +185,7 @@ def first_page():
         color = color_passive
         pygame.draw.rect(SCREEN, color, input_rect)
 
-
+        print("Hello")
 
         active = False
 
