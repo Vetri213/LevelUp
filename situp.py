@@ -50,7 +50,7 @@ with md_pose.Pose(min_detection_confidence=0.5,
             landmarks = result.pose_landmarks.landmark
 
             for i in range(0, len(landmarks)):
-                if 11 <= i <= 26:
+                if 11 <= i <= 28:
                     valid_arr.append(landmarks[i].visibility >= 0.3)
                     if landmarks[i].visibility <= 0.01:
                         for j in range(0, len(landmarks)):
@@ -86,6 +86,9 @@ with md_pose.Pose(min_detection_confidence=0.5,
 
             left_angle = detect_angle_3(l_shoulder, l_hip, l_knee)
             right_angle = detect_angle_3(r_shoulder, r_hip, r_knee)
+
+            left_angle_knees = detect_angle_3(l_hip, l_knee, l_ankle)
+            right_angle_knees = detect_angle_3(r_hip, r_knee, r_ankle)
 
             # show angle on image and make animation for angle detection
 
@@ -147,25 +150,29 @@ with md_pose.Pose(min_detection_confidence=0.5,
             #     angle = left_angle
             #     back = l_back_angle
 
-            if landmarks[12].z > landmarks[11].z:
-                angle = right_angle
-            else:
-                angle = left_angle
+            if all(valid_arr):
+                if landmarks[12].z > landmarks[11].z:
+                    angle = right_angle
+                    knee_angle = right_angle_knees
+                else:
+                    angle = left_angle
+                    knee_angle = left_angle_knees
 
-            print(angle)
-            if angle > 120:
-                position = "Down"
-            elif angle < 50 and position == "Down":
-                position = "Up"
-                counter += 1
+                if knee_angle < 100:
+                    print(angle)
+                    if angle > 120:
+                        position = "Down"
+                    elif angle < 50 and position == "Down":
+                        position = "Up"
+                        counter += 1
 
-                # if l_back_angle < 150 or r_back_angle < 150:
-                #     # put text to say that back is not straight
-                #     cv2.putText(image, "Back is not straight",
-                #                 (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2,
-                #                 cv2.LINE_AA)
-                print(counter)
-            print(f"right: {landmarks[14].z}, left: {landmarks[13].z}, back: {r_back_angle} angle: {right_angle}")
+                    # if l_back_angle < 150 or r_back_angle < 150:
+                    #     # put text to say that back is not straight
+                    #     cv2.putText(image, "Back is not straight",
+                    #                 (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2,
+                    #                 cv2.LINE_AA)
+                    print(counter)
+                print(f"right: {landmarks[14].z}, left: {landmarks[13].z}, back: {r_back_angle} angle: {right_angle}")
 
 
         except:
