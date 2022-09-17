@@ -48,7 +48,7 @@ with md_pose.Pose(min_detection_confidence=0.5,
             landmarks = result.pose_landmarks.landmark
 
             for i in range(0, len(landmarks)):
-                if 11 <= i <= 16 or 23 <= i <= 30:
+                if 11 <= i <= 16:
                     if landmarks[i].visibility <= 0.01:
                         for j in range(0, len(landmarks)):
                             landmarks[j].x = 0
@@ -152,15 +152,25 @@ with md_pose.Pose(min_detection_confidence=0.5,
                        20, (255, 255, 255), 1)
 
             # Check if back is straight
-            # if l_back_angle >= 150 or r_back_angle >=150:
-            #     print ("OK")
-            if left_angle <= 60 and position == "Up":
+            # if l_back_angle >= 130:
+        # print(left_angle)
+
+            angle = 0
+            back = 0
+            # if landmarks[14].z > landmarks[13].z:
+            #     angle = right_angle
+            #     back = r_back_angle
+            # else:
+            #     angle = left_angle
+            #     back = l_back_angle
+
+            if right_angle <= 85 and left_angle <= 85 and position == "Up":
                 position = 'Down'
 
-            elif left_angle <= 60:
+            elif right_angle <= 85 and left_angle <= 85:
                 position = "Down"
 
-            elif (left_angle > 130) and position == 'Down':
+            elif (right_angle > 130 and left_angle > 130) and position == 'Down':
                 position = 'Up'
                 counter += 1
                 # if l_back_angle < 150 or r_back_angle < 150:
@@ -169,6 +179,7 @@ with md_pose.Pose(min_detection_confidence=0.5,
                 #                 (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2,
                 #                 cv2.LINE_AA)
                 print(counter)
+            print(f"right: {landmarks[14].z}, left: {landmarks[13].z}, back: {r_back_angle} angle: {right_angle}")
 
 
         except:
@@ -183,7 +194,6 @@ with md_pose.Pose(min_detection_confidence=0.5,
                                       color=(245, 66, 230), thickness=2,
                                       circle_radius=2)
                                   )
-        # count number of push ups and position
         if counter >= 0:
             cv2.putText(image1, "Push ups: " + str(counter), (10, 30),
                         cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
