@@ -48,7 +48,7 @@ with md_pose.Pose(min_detection_confidence=0.5,
             landmarks = result.pose_landmarks.landmark
 
             for i in range(0, len(landmarks)):
-                if 11 <= i <= 26:
+                if 23 <= i <= 28:
                     if landmarks[i].visibility <= 0.01:
                         for j in range(0, len(landmarks)):
                             landmarks[j].x = 0
@@ -88,11 +88,13 @@ with md_pose.Pose(min_detection_confidence=0.5,
             l_knee = [landmarks[25].x, landmarks[25].y]
             l_ankle = [landmarks[27].x, landmarks[27].y]
 
+            print (landmarks[27])
+
             l_back_angle = detect_angle_3(l_shoulder, l_hip, l_ankle)
             r_back_angle = detect_angle_3(r_shoulder, r_hip, r_ankle)
 
-            left_angle = detect_angle_3(l_shoulder, l_hip, l_knee)
-            right_angle = detect_angle_3(r_shoulder, r_hip, r_knee)
+            left_angle = detect_angle_3(l_hip, l_knee, l_ankle)
+            right_angle = detect_angle_3(r_hip, r_knee, r_ankle)
 
             # show angle on image and make animation for angle detection
 
@@ -160,9 +162,9 @@ with md_pose.Pose(min_detection_confidence=0.5,
                 angle = left_angle
 
             print(angle)
-            if angle > 120:
+            if angle < 110:
                 position = "Down"
-            elif angle < 50 and position == "Down":
+            elif angle > 150 and position == "Down":
                 position = "Up"
                 counter += 1
 
@@ -188,7 +190,7 @@ with md_pose.Pose(min_detection_confidence=0.5,
                                       circle_radius=2)
                                   )
         if counter >= 0:
-            cv2.putText(image1, "Sit ups: " + str(counter), (10, 30),
+            cv2.putText(image1, "Squats: " + str(counter), (10, 30),
                         cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
             cv2.putText(image1, "Position: " + position, (10, 60),
                         cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
