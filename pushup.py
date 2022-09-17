@@ -37,8 +37,8 @@ with md_pose.Pose(min_detection_confidence=0.5,
                   min_tracking_confidence=0.5) as pose:
     while cap.isOpened():
         ret, frame = cap.read()
-        image1 = cv2.flip(frame, 1)
-        image = cv2.cvtColor(image1, cv2.COLOR_BGR2RGB)
+        image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        image = cv2.flip(image, 1)
         result = pose.process(image)
         image.flags.writeable = True
 
@@ -89,10 +89,13 @@ with md_pose.Pose(min_detection_confidence=0.5,
             l_back_angle = detect_angle_3(l_shoulder, l_hip, l_ankle)
             r_back_angle = detect_angle_3(r_shoulder, r_hip, r_ankle)
 
+            left_angle = detect_angle_3(l_shoulder, l_elbow, l_wrist)
+            right_angle = detect_angle_3(r_shoulder, r_elbow, r_wrist)
+
             # show angle on image and make animation for angle detection
 
-            right = "{:.2f}".format(r_back_angle)
-            left = "{:.2f}".format(l_back_angle)
+            right = "{:.2f}".format(right_angle)
+            left = "{:.2f}".format(left_angle)
 
             cv2.putText(image, str(left),
                         tuple(np.multiply(l_elbow, [1280, 750]).astype(int)),
@@ -104,6 +107,55 @@ with md_pose.Pose(min_detection_confidence=0.5,
                         cv2.LINE_AA)
 
 
+            left_angle2 = 0
+            if left_angle > 90:
+                left_angle2 = left_angle - 90
+            else:
+                left_angle2 = left_angle
+            if right_angle > 90:
+                right_angle2 = right_angle - 90
+            else:
+                right_angle2 = right_angle
+
+            cv2.circle(image,
+                       tuple(np.multiply(l_elbow, [1280, 720]).astype(int)),
+                       20, (255, 255, 255), 1)
+            cv2.circle(image,
+                       tuple(np.multiply(r_elbow, [1280, 720]).astype(int)),
+                       20, (255, 255, 255), 1)
+            cv2.circle(image,
+                       tuple(np.multiply(l_elbow, [1280, 720]).astype(int)),
+                       int(20 * (90 - left_angle2) / 90), (255, 255, 255), -1)
+            cv2.circle(image,
+                       tuple(np.multiply(r_elbow, [1280, 720]).astype(int)),
+                       int(20 * (90 - right_angle2) / 90), (255, 255, 255), -1)
+            cv2.circle(image,
+                       tuple(np.multiply(l_shoulder, [1280, 720]).astype(int)),
+                       20, (255, 255, 255), 1)
+            cv2.circle(image,
+                       tuple(np.multiply(r_shoulder, [1280, 720]).astype(int)),
+                       20, (255, 255, 255), 1)
+            cv2.circle(image,
+                       tuple(np.multiply(l_wrist, [1280, 720]).astype(int)),
+                       20, (255, 255, 255), 1)
+            cv2.circle(image,
+                       tuple(np.multiply(r_wrist, [1280, 720]).astype(int)),
+                       20, (255, 255, 255), 1)
+
+            # Check if back is straight
+
+            if left_angle > 130 and right_angle > 130:
+                position = 'Up'
+
+            elif left_angle <= 90 and right_angle <= 90 and position == 'Up':
+                position = 'Down'
+                counter += 1
+                # if l_back_angle < 150 or r_back_angle < 150:
+                #     # put text to say that back is not straight
+                #     cv2.putText(image, "Back is not straight",
+                #                 (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2,
+                #                 cv2.LINE_AA)
+                print(counter)
 
 
         except:
@@ -125,14 +177,9 @@ with md_pose.Pose(min_detection_confidence=0.5,
             cv2.putText(image, "Position: " + position, (10, 60),
                         cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
 
-        cv2.imshow("Video", image1)
+        cv2.imshow("Video", image)
         key = cv2.waitKey(1)
         if key == ord("q"):
-            break
-
-        if key == ord("s"):
-            import main
-            main.main()
             break
 
 cap.release()
