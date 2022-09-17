@@ -12,8 +12,8 @@ position = None
 
 cap = cv2.VideoCapture(0)
 # find camera frame dimensions
-print(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-print(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+width = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
+height = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
 
 
 def detect_angle_3(p1: list, p2: list, p3: list):
@@ -31,16 +31,18 @@ def detect_angle_3(p1: list, p2: list, p3: list):
 
 
 counter = 0
-position = "Up"
+position = "None"
 
 with md_pose.Pose(min_detection_confidence=0.5,
                   min_tracking_confidence=0.5) as pose:
     while cap.isOpened():
         ret, frame = cap.read()
-        image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        image = cv2.flip(image, 1)
+        image1 = cv2.flip(frame, 1)
+        image = cv2.cvtColor(image1, cv2.COLOR_BGR2RGB)
+
         result = pose.process(image)
-        image.flags.writeable = True
+
+        image1.flags.writeable = True
 
         try:
             landmarks = result.pose_landmarks.landmark
@@ -97,12 +99,12 @@ with md_pose.Pose(min_detection_confidence=0.5,
             right = "{:.2f}".format(right_angle)
             left = "{:.2f}".format(left_angle)
 
-            cv2.putText(image, str(left),
-                        tuple(np.multiply(l_elbow, [1280, 750]).astype(int)),
+            cv2.putText(image1, str(left),
+                        tuple(np.multiply(l_elbow, [width, height]).astype(int)),
                         cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2,
                         cv2.LINE_AA)
-            cv2.putText(image, str(right),
-                        tuple(np.multiply(r_elbow, [1280, 690]).astype(int)),
+            cv2.putText(image1, str(right),
+                        tuple(np.multiply(r_elbow, [width + 10, height + 10]).astype(int)),
                         cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2,
                         cv2.LINE_AA)
 
@@ -117,38 +119,49 @@ with md_pose.Pose(min_detection_confidence=0.5,
             else:
                 right_angle2 = right_angle
 
-            cv2.circle(image,
-                       tuple(np.multiply(l_elbow, [1280, 720]).astype(int)),
+            cv2.circle(image1,
+                       tuple(np.multiply(l_elbow, [width, height]).astype(int)),
                        20, (255, 255, 255), 1)
-            cv2.circle(image,
-                       tuple(np.multiply(r_elbow, [1280, 720]).astype(int)),
+            cv2.circle(image1,
+                       tuple(np.multiply(r_elbow, [width, height]).astype(int)),
                        20, (255, 255, 255), 1)
-            cv2.circle(image,
-                       tuple(np.multiply(l_elbow, [1280, 720]).astype(int)),
-                       int(20 * (90 - left_angle2) / 90), (255, 255, 255), -1)
-            cv2.circle(image,
-                       tuple(np.multiply(r_elbow, [1280, 720]).astype(int)),
-                       int(20 * (90 - right_angle2) / 90), (255, 255, 255), -1)
-            cv2.circle(image,
-                       tuple(np.multiply(l_shoulder, [1280, 720]).astype(int)),
+
+            cv2.putText(image1, "CHECK HERE",
+                        tuple(np.multiply(l_elbow, [width + 10, height + 10]).astype(int)),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2,
+                        cv2.LINE_AA)
+
+
+            # cv2.circle(image1,
+            #            tuple(np.multiply(l_elbow, [width, height]).astype(int)),
+            #            int(20 * (90 - left_angle2) / 90), (255, 255, 255), -1)
+            # cv2.circle(image1,
+            #            tuple(np.multiply(r_elbow, [width, height]).astype(int)),
+            #            int(20 * (90 - right_angle2) / 90), (255, 255, 255), -1)
+            cv2.circle(image1,
+                       tuple(np.multiply(l_shoulder, [width, height]).astype(int)),
                        20, (255, 255, 255), 1)
-            cv2.circle(image,
-                       tuple(np.multiply(r_shoulder, [1280, 720]).astype(int)),
+            cv2.circle(image1,
+                       tuple(np.multiply(r_shoulder, [width, height]).astype(int)),
                        20, (255, 255, 255), 1)
-            cv2.circle(image,
-                       tuple(np.multiply(l_wrist, [1280, 720]).astype(int)),
+            cv2.circle(image1,
+                       tuple(np.multiply(l_wrist, [width, height]).astype(int)),
                        20, (255, 255, 255), 1)
-            cv2.circle(image,
-                       tuple(np.multiply(r_wrist, [1280, 720]).astype(int)),
+            cv2.circle(image1,
+                       tuple(np.multiply(r_wrist, [width, height]).astype(int)),
                        20, (255, 255, 255), 1)
 
             # Check if back is straight
-
-            if left_angle > 130 and right_angle > 130:
-                position = 'Up'
-
-            elif left_angle <= 90 and right_angle <= 90 and position == 'Up':
+            # if l_back_angle >= 150 or r_back_angle >=150:
+            #     print ("OK")
+            if left_angle <= 60 and position == "Up":
                 position = 'Down'
+
+            elif left_angle <= 60:
+                position = "Down"
+
+            elif (left_angle > 130) and position == 'Down':
+                position = 'Up'
                 counter += 1
                 # if l_back_angle < 150 or r_back_angle < 150:
                 #     # put text to say that back is not straight
@@ -161,7 +174,7 @@ with md_pose.Pose(min_detection_confidence=0.5,
         except:
             pass
 
-        md_drawing.draw_landmarks(image, result.pose_landmarks,
+        md_drawing.draw_landmarks(image1, result.pose_landmarks,
                                   md_pose.POSE_CONNECTIONS,
                                   md_drawing.DrawingSpec(
                                       color=(245, 117, 66), thickness=2,
@@ -172,12 +185,12 @@ with md_pose.Pose(min_detection_confidence=0.5,
                                   )
         # count number of push ups and position
         if counter >= 0:
-            cv2.putText(image, "Push ups: " + str(counter), (10, 30),
+            cv2.putText(image1, "Push ups: " + str(counter), (10, 30),
                         cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
-            cv2.putText(image, "Position: " + position, (10, 60),
+            cv2.putText(image1, "Position: " + position, (10, 60),
                         cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
 
-        cv2.imshow("Video", image)
+        cv2.imshow("Video", image1)
         key = cv2.waitKey(1)
         if key == ord("q"):
             break
