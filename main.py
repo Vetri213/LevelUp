@@ -92,10 +92,20 @@ def options():
 
         SCREEN.fill("white")
 
-        OPTIONS_TEXT = get_font(45).render("This is the OPTIONS screen.", True,
-                                           "Black")
-        OPTIONS_RECT = OPTIONS_TEXT.get_rect(center=(640, 260))
-        SCREEN.blit(OPTIONS_TEXT, OPTIONS_RECT)
+        Progress_BUTTON = Button(image=pygame.image.load("Assets/Play Rect.png"),
+                             pos=(640, 250),
+                             text_input="Progress", font=get_font(75),
+                             base_color="#d7fcd4", hovering_color="White")
+        Progress_BUTTON.changeColor(OPTIONS_MOUSE_POS)
+        Progress_BUTTON.update(SCREEN)
+
+        Infinite_BUTTON = Button(
+            image=pygame.image.load("Assets/Options Rect.png"), pos=(640, 400),
+            text_input="Infinite", font=get_font(75), base_color="#d7fcd4",
+            hovering_color="White")
+
+        Infinite_BUTTON.changeColor(OPTIONS_MOUSE_POS)
+        Infinite_BUTTON.update(SCREEN)
 
         OPTIONS_BACK = Button(image=None, pos=(640, 460),
                               text_input="BACK", font=get_font(75),
@@ -115,13 +125,13 @@ def options():
         pygame.display.update()
 
 
-def main_menu():
+def main_menu(user_text):
     while True:
         SCREEN.blit(BG, (0, 0))
 
         MENU_MOUSE_POS = pygame.mouse.get_pos()
-
-        MENU_TEXT = get_font(100).render("MAIN MENU", True, "#170064")
+        message = ("Welcome "+user_text)
+        MENU_TEXT = get_font(75).render(message, True, "#170064")
         MENU_RECT = MENU_TEXT.get_rect(center=(640, 100))
 
         PLAY_BUTTON = Button(image=pygame.image.load("Assets/Play Rect.png"),
@@ -205,7 +215,7 @@ def first_page():
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if ENTER_BUTTON.checkForInput(MENU_MOUSE_POS):
-                    main_menu()
+                    main_menu(user_text)
                 if QUIT_BUTTON.checkForInput(MENU_MOUSE_POS):
                     pygame.quit()
                     sys.exit()
