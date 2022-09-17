@@ -44,16 +44,20 @@ with md_pose.Pose(min_detection_confidence=0.5,
 
         image1.flags.writeable = True
 
+        all_visible = None
         try:
+            valid_arr = []
             landmarks = result.pose_landmarks.landmark
 
             for i in range(0, len(landmarks)):
                 if 23 <= i <= 28:
-                    if landmarks[i].visibility <= 0.01:
+                    valid_arr.append(landmarks[i].visibility >= 0.3)
+                    if landmarks[i].visibility <= 0.08:
                         for j in range(0, len(landmarks)):
                             landmarks[j].x = 0
                             landmarks[j].y = 0
                             landmarks[j].visibility = 0
+
 
 
                     pass
@@ -161,10 +165,10 @@ with md_pose.Pose(min_detection_confidence=0.5,
             else:
                 angle = left_angle
 
-            print(angle)
-            if angle < 110:
+
+            if angle < 110 and all(valid_arr):
                 position = "Down"
-            elif angle > 150 and position == "Down":
+            elif angle > 150 and position == "Down" and all(valid_arr):
                 position = "Up"
                 counter += 1
 
@@ -198,6 +202,11 @@ with md_pose.Pose(min_detection_confidence=0.5,
         cv2.imshow("Video", image1)
         key = cv2.waitKey(1)
         if key == ord("q"):
+            cap.release()
+            cv2.destroyAllWindows()
+
+            import main
+            main.main()
             break
 
 cap.release()

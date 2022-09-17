@@ -44,11 +44,14 @@ with md_pose.Pose(min_detection_confidence=0.5,
 
         image1.flags.writeable = True
 
+        valid_arr = []
+
         try:
             landmarks = result.pose_landmarks.landmark
 
             for i in range(0, len(landmarks)):
                 if 11 <= i <= 16:
+                    valid_arr.append(landmarks[i].visibility >= 0.3)
                     if landmarks[i].visibility <= 0.01:
                         for j in range(0, len(landmarks)):
                             landmarks[j].x = 0
@@ -203,6 +206,11 @@ with md_pose.Pose(min_detection_confidence=0.5,
         cv2.imshow("Video", image1)
         key = cv2.waitKey(1)
         if key == ord("q"):
+            cap.release()
+            cv2.destroyAllWindows()
+
+            import main
+            main.main()
             break
 
 cap.release()

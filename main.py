@@ -61,10 +61,19 @@ def play():
                     import pushup
                     pushup.main()
                     pygame.quit()
+                    sys.exit()
                 if SIT_UPS.checkForInput(PLAY_MOUSE_POS):
                     import situp
                     situp.main()
                     pygame.quit()
+                    sys.exit()
+
+                if SQUATS.checkForInput(PLAY_MOUSE_POS):
+                    import squat
+                    squat.main()
+                    pygame.quit()
+                    sys.exit()
+
                 ## ONE MORE
 
         pygame.display.update()
