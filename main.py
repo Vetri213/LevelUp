@@ -3,11 +3,18 @@ from button import Button
 
 pygame.init()
 
-SCREEN = pygame.display.set_mode((1280, 720))
+width, height = (1280, 720)
+
+
+
+#SCREEN = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+SCREEN = pygame.display.set_mode((width, height))
+
+
 pygame.display.set_caption("Menu")
 
 BG = pygame.image.load("Assets/bg.png")
-BG = pygame.transform.scale(BG, (1280, 720))
+BG = pygame.transform.scale(BG, (width, height))
 
 
 def get_font(size):  # Returns Press-Start-2P in the desired size
@@ -114,7 +121,7 @@ def main_menu():
 
         MENU_MOUSE_POS = pygame.mouse.get_pos()
 
-        MENU_TEXT = get_font(100).render("MAIN MENU", True, "#006400")
+        MENU_TEXT = get_font(100).render("MAIN MENU", True, "#170064")
         MENU_RECT = MENU_TEXT.get_rect(center=(640, 100))
 
         PLAY_BUTTON = Button(image=pygame.image.load("Assets/Play Rect.png"),
@@ -148,9 +155,95 @@ def main_menu():
                 if QUIT_BUTTON.checkForInput(MENU_MOUSE_POS):
                     pygame.quit()
                     sys.exit()
+        pygame.display.update()
 
+def first_page():
+    user_text = "Input Name"
+    first = True
+    while True:
+        SCREEN.blit(BG, (0, 0))
+
+        # basic font for user typed
+        base_font = pygame.font.Font(None, 120)
+
+        # create rectangle
+        input_rect = pygame.Rect(width/2-250, height/2-150, 500, 100)
+
+        color_active = pygame.Color('lightskyblue3')
+
+        color_passive = pygame.Color('chartreuse4')
+        color = color_passive
+        pygame.draw.rect(SCREEN, color, input_rect)
+
+
+
+        active = False
+
+        MENU_MOUSE_POS = pygame.mouse.get_pos()
+
+        MENU_TEXT = get_font(100).render("Level Up", True, "#645f00")
+        MENU_RECT = MENU_TEXT.get_rect(center=(640, 100))
+
+        ENTER_BUTTON = Button(image=pygame.image.load("Assets/Options Rect.png"), pos=(640, 400),
+            text_input="Enter", font=get_font(75), base_color="#d7fcd4",
+            hovering_color="White")
+
+        QUIT_BUTTON = Button(image=pygame.image.load("Assets/Quit Rect.png"),
+                             pos=(640, 550),
+                             text_input="QUIT", font=get_font(75),
+                             base_color="#d7fcd4", hovering_color="White")
+
+        SCREEN.blit(MENU_TEXT, MENU_RECT)
+
+        for button in [ENTER_BUTTON, QUIT_BUTTON]:
+            button.changeColor(MENU_MOUSE_POS)
+            button.update(SCREEN)
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if ENTER_BUTTON.checkForInput(MENU_MOUSE_POS):
+                    main_menu()
+                if QUIT_BUTTON.checkForInput(MENU_MOUSE_POS):
+                    pygame.quit()
+                    sys.exit()
+                if input_rect.collidepoint(event.pos):
+                    active = True
+                else:
+                    active = False
+
+            if event.type == pygame.KEYDOWN:
+
+                # Check for backspace
+                if event.key == pygame.K_BACKSPACE:
+
+                    # get text input from 0 to -1 i.e. end.
+                    user_text = user_text[:-1]
+
+                # Unicode standard is used for string
+                # formation
+                else:
+                    if first:
+                        user_text = event.unicode
+                        first = False
+                    else:
+                        user_text += event.unicode
+
+        if active:
+            color = color_active
+        else:
+            color = color_passive
+
+        text_surface = base_font.render(user_text, True, (255, 255, 255))
+
+        SCREEN.blit(text_surface, (input_rect.x + 5, input_rect.y + 5))
+
+        input_rect.w = max(100, text_surface.get_width() + 10)
+        pygame.display.flip()
 
         pygame.display.update()
 
 
-main_menu()
+first_page()
