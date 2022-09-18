@@ -86,30 +86,30 @@ def play():
         pygame.display.update()
 
 
-def options():
+def options(user_text):
     active = False
     while True:
         OPTIONS_MOUSE_POS = pygame.mouse.get_pos()
 
         SCREEN.fill("white")
 
-        Progress_BUTTON = Button(image=pygame.image.load("Assets/Play Rect.png"),
+        Progress_BUTTON = Button(image=pygame.image.load("Assets/Options Rect.png"),
                              pos=(640, 250),
-                             text_input="Progress", font=get_font(75),
+                             text_input="Progress", font=get_font(70),
                              base_color="#d7fcd4", hovering_color="White")
         Progress_BUTTON.changeColor(OPTIONS_MOUSE_POS)
         Progress_BUTTON.update(SCREEN)
 
         Infinite_BUTTON = Button(
             image=pygame.image.load("Assets/Options Rect.png"), pos=(640, 400),
-            text_input="Infinite", font=get_font(75), base_color="#d7fcd4",
+            text_input="Infinite", font=get_font(70), base_color="#d7fcd4",
             hovering_color="White")
 
         Infinite_BUTTON.changeColor(OPTIONS_MOUSE_POS)
         Infinite_BUTTON.update(SCREEN)
 
-        OPTIONS_BACK = Button(image=None, pos=(640, 460),
-                              text_input="BACK", font=get_font(75),
+        OPTIONS_BACK = Button(image=None, pos=(640, 600),
+                              text_input="BACK", font=get_font(70),
                               base_color="Black", hovering_color="Green")
 
         OPTIONS_BACK.changeColor(OPTIONS_MOUSE_POS)
@@ -121,14 +121,14 @@ def options():
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if OPTIONS_BACK.checkForInput(OPTIONS_MOUSE_POS):
-                    main_menu()
+                    main_menu(user_text)
                 if Progress_BUTTON.checkForInput(OPTIONS_MOUSE_POS):
                     pass
                     #Set to progress mode and activate text
                 if Infinite_BUTTON.checkForInput(OPTIONS_MOUSE_POS):
                     #Set to infinite and deactivate text
                     pass
-                    sys.exit()
+
 
         pygame.display.update()
 
@@ -169,14 +169,14 @@ def main_menu(user_text):
                 if PLAY_BUTTON.checkForInput(MENU_MOUSE_POS):
                     play()
                 if OPTIONS_BUTTON.checkForInput(MENU_MOUSE_POS):
-                    options()
+                    options(user_text)
                 if QUIT_BUTTON.checkForInput(MENU_MOUSE_POS):
                     pygame.quit()
                     sys.exit()
         pygame.display.update()
 
 def first_page():
-    user_text = "Input Name"
+    user_text = "Username"
     first = True
     while True:
         SCREEN.blit(BG, (0, 0))
@@ -192,8 +192,6 @@ def first_page():
         color_passive = pygame.Color('chartreuse4')
         color = color_passive
         pygame.draw.rect(SCREEN, color, input_rect)
-
-        print("Hello")
 
         active = False
 
@@ -247,7 +245,10 @@ def first_page():
                         user_text = event.unicode
                         first = False
                     else:
-                        user_text += event.unicode
+                        if len(user_text) > 8:
+                            user_text = user_text[0:8]
+                        else:
+                            user_text += event.unicode
 
         if active:
             color = color_active

@@ -210,7 +210,7 @@ with md_pose.Pose(min_detection_confidence=0.5,
             cv2.destroyAllWindows()
 
             import main
-            main.main()
+            main.main_menu("")
             break
 
 cap.release()

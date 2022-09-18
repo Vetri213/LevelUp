@@ -92,7 +92,7 @@ with md_pose.Pose(min_detection_confidence=0.5,
             l_knee = [landmarks[25].x, landmarks[25].y]
             l_ankle = [landmarks[27].x, landmarks[27].y]
 
-            print (landmarks[27])
+            #print (landmarks[27])
 
             l_back_angle = detect_angle_3(l_shoulder, l_hip, l_ankle)
             r_back_angle = detect_angle_3(r_shoulder, r_hip, r_ankle)
@@ -177,8 +177,8 @@ with md_pose.Pose(min_detection_confidence=0.5,
                 #     cv2.putText(image, "Back is not straight",
                 #                 (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2,
                 #                 cv2.LINE_AA)
-                print(counter)
-            print(f"right: {landmarks[14].z}, left: {landmarks[13].z}, back: {r_back_angle} angle: {right_angle}")
+                #print(counter)
+            #print(f"right: {landmarks[14].z}, left: {landmarks[13].z}, back: {r_back_angle} angle: {right_angle}")
 
 
         except:
@@ -205,8 +205,8 @@ with md_pose.Pose(min_detection_confidence=0.5,
             cap.release()
             cv2.destroyAllWindows()
 
-            import main
-            main.main()
+            from main import main_menu
+            main_menu("")
             break
 
 cap.release()
