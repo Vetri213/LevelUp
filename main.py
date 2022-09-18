@@ -21,7 +21,7 @@ def get_font(size):  # Returns Press-Start-2P in the desired size
     return pygame.font.Font("Assets/font.ttf", size)
 
 
-def play(user_text, num):
+def play(user_text, num=0):
     while True:
         PLAY_MOUSE_POS = pygame.mouse.get_pos()
 
@@ -144,6 +144,8 @@ def options(user_text):
                 if OPTIONS_BACK.checkForInput(OPTIONS_MOUSE_POS):
                     if mode=="Infinite":
                         counter = 0
+                    if counter == "":
+                        counter = 0
                     main_menu(user_text, int(counter))
                 if Progress_BUTTON.checkForInput(OPTIONS_MOUSE_POS):
                     mode = "Progress"
@@ -199,7 +201,7 @@ def options(user_text):
 
 
 
-def main_menu(user_text, num = 1):
+def main_menu(user_text, num = 0):
     while True:
         SCREEN.blit(BG, (0, 0))
 

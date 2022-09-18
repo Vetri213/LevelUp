@@ -56,7 +56,7 @@ def runner(status="Infinite", num=0):
                 landmarks = result.pose_landmarks.landmark
 
                 for i in range(0, len(landmarks)):
-                    if 11 <= i <= 28:
+                    if 23 <= i <= 26 or 11 <= i <= 12:
                         valid_arr.append(landmarks[i].visibility >= 0.3)
                         if landmarks[i].visibility <= 0.01:
                             for j in range(0, len(landmarks)):
@@ -149,28 +149,17 @@ def runner(status="Infinite", num=0):
 
                 angle = 0
                 back = 0
-                # if landmarks[14].z > landmarks[13].z:
-                #     angle = right_angle
-                #     back = r_back_angle
-                # else:
-                #     angle = left_angle
-                #     back = l_back_angle
+                if landmarks[14].z > landmarks[13].z:
+                    angle = right_angle
+                else:
+                    angle = left_angle
 
-                # if all(valid_arr):
-                #     if landmarks[12].z > landmarks[11].z:
-                #         angle = right_angle
-                #         knee_angle = right_angle_knees
-                #     else:
-                #         angle = left_angle
-                #         knee_angle = left_angle_knees
-
-                # if knee_angle < 120:
-                #     print(angle)
-                if right_angle > 120:
-                    position = "Down"
-                elif right_angle < 90 and position == "Down":
-                    position = "Up"
-                    counter += 1
+                if all(valid_arr):
+                    if angle > 120:
+                        position = "Down"
+                    elif angle < 70 and position == "Down":
+                        position = "Up"
+                        counter += 1
 
                         # if l_back_angle < 150 or r_back_angle < 150:
                         #     # put text to say that back is not straight
@@ -194,18 +183,22 @@ def runner(status="Infinite", num=0):
                                           circle_radius=2)
                                       )
             if counter >= 0:
-                cv2.putText(image1, "Sit ups: " + str(counter), (10, 30),
+                cv2.putText(image1, "Position: " + position, (10, 130),
                             cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
-                cv2.putText(image1, "Position: " + position, (10, 60),
+            if status == "Progress":
+                cv2.putText(image1, "Push ups: " + f"{min(counter, num)}/{num}", (10, 100),
                             cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+                cv2.rectangle(image1, (20, 10), (620, 40), (255, 100, 100), 5)
 
-            if counter == num and status == "Progress":
-                from main import main_menu
-                cap.release()
-                cv2.destroyAllWindows()
-                main_menu(user_text = "Congratulations!!!")
+                length_progress = (counter / num) * (600)
 
-
+                cv2.rectangle(image1, (20, 10), (min(620, 20 + int(length_progress)), 40), (255, 100, 255), -1)
+            else:
+                cv2.putText(image1, "Push ups: " + f"{counter}", (10, 100),
+                            cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+            if counter >= num and status == "Progress":
+                cv2.putText(image1, "CONGRATS, CLICK Q TO EXIT", (100, 300),
+                            cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
 
             cv2.imshow("Video", image1)
             key = cv2.waitKey(1)

@@ -15,7 +15,7 @@ def detect_angle_3(p1: list, p2: list, p3: list):
 
     return angle
 
-def runner(num):
+def runner(num = 0):
     if num == 0:
         status = "Infinite"
     else:
@@ -202,19 +202,24 @@ def runner(num):
                                           circle_radius=2)
                                       )
             if counter >= 0:
-                cv2.putText(image1, "Squats: " + str(counter), (10, 30),
+                cv2.putText(image1, "Position: " + position, (10, 130),
                             cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
-                cv2.putText(image1, "Position: " + position, (10, 60),
+            if status == "Progress":
+                cv2.putText(image1, "Push ups: " + f"{min(counter, num)}/{num}", (10, 100),
+                            cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+                cv2.rectangle(image1, (20, 10), (620, 40), (255, 100, 100), 5)
+
+                length_progress = (counter / num) * (600)
+
+                cv2.rectangle(image1, (20, 10), (min(620, 20 + int(length_progress)), 40), (255, 100, 255), -1)
+            else:
+                cv2.putText(image1, "Push ups: " + f"{counter}", (10, 100),
+                            cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+            if counter >= num and status == "Progress":
+                cv2.putText(image1, "CONGRATS, CLICK Q TO EXIT", (100, 300),
                             cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
 
             cv2.imshow("Video", image1)
-
-            if counter == num and status == "Progress":
-                from main import main_menu
-                cap.release()
-                cv2.destroyAllWindows()
-                main_menu(user_text="Congratulations!!!")
-
             key = cv2.waitKey(1)
             if key == ord("q"):
                 cap.release()

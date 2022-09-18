@@ -152,6 +152,8 @@ def runner(status="Infinite", num=0):
                            tuple(np.multiply(r_wrist, [width, height]).astype(int)),
                            20, (255, 255, 255), 1)
 
+
+
                 # Check if back is straight
                 # if l_back_angle >= 130:
                 # print(left_angle)
@@ -165,10 +167,10 @@ def runner(status="Infinite", num=0):
                 #     angle = left_angle
                 #     back = l_back_angle
                 if all(valid_arr):
-                    if right_angle <= 85 and left_angle <= 85 and position == "Up":
+                    if right_angle <= 90 and left_angle <= 90 and position == "Up":
                         position = 'Down'
 
-                    elif right_angle <= 85 and left_angle <= 85:
+                    elif right_angle <= 90 and left_angle <= 90:
                         position = "Down"
 
                     elif (right_angle > 130 and left_angle > 130) and position == 'Down':
@@ -181,6 +183,8 @@ def runner(status="Infinite", num=0):
                         #                 cv2.LINE_AA)
                         # print(counter)
                     # print(f"right: {landmarks[14].z}, left: {landmarks[13].z}, back: {r_back_angle} angle: {right_angle}")
+
+
 
 
             except:
@@ -196,16 +200,24 @@ def runner(status="Infinite", num=0):
                                           circle_radius=2)
                                       )
             if counter >= 0:
-                cv2.putText(image1, "Push ups: " + str(counter), (10, 30),
+
+                cv2.putText(image1, "Position: " + position, (10, 130),
                             cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
-                cv2.putText(image1, "Position: " + position, (10, 60),
+            if status == "Progress":
+                cv2.putText(image1, "Push ups: " + f"{min(counter, num)}/{num}", (10, 100),
+                            cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+                cv2.rectangle(image1, (20, 10), (620, 40), (255, 100, 100), 5)
+
+                length_progress = (counter/num)*(600)
+
+                cv2.rectangle(image1, (20, 10), (min(620, 20+int(length_progress)), 40), (255, 100, 255), -1)
+            else:
+                cv2.putText(image1, "Push ups: " + f"{counter}", (10, 100),
+                            cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+            if counter >= num and status == "Progress":
+                cv2.putText(image1, "CONGRATS, CLICK Q TO EXIT", (100, 300),
                             cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
 
-            if counter == num and status == "Progress":
-                from main import main_menu
-                cap.release()
-                cv2.destroyAllWindows()
-                main_menu(user_text = "Congratulations!!!")
 
             cv2.imshow("Video", image1)
             key = cv2.waitKey(1)
