@@ -87,6 +87,7 @@ def play():
 
 
 def options():
+    active = False
     while True:
         OPTIONS_MOUSE_POS = pygame.mouse.get_pos()
 
@@ -121,6 +122,13 @@ def options():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if OPTIONS_BACK.checkForInput(OPTIONS_MOUSE_POS):
                     main_menu()
+                if Progress_BUTTON.checkForInput(OPTIONS_MOUSE_POS):
+                    pass
+                    #Set to progress mode and activate text
+                if Infinite_BUTTON.checkForInput(OPTIONS_MOUSE_POS):
+                    #Set to infinite and deactivate text
+                    pass
+                    sys.exit()
 
         pygame.display.update()
 

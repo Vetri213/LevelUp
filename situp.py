@@ -150,29 +150,29 @@ with md_pose.Pose(min_detection_confidence=0.5,
             #     angle = left_angle
             #     back = l_back_angle
 
-            if all(valid_arr):
-                if landmarks[12].z > landmarks[11].z:
-                    angle = right_angle
-                    knee_angle = right_angle_knees
-                else:
-                    angle = left_angle
-                    knee_angle = left_angle_knees
+            # if all(valid_arr):
+            #     if landmarks[12].z > landmarks[11].z:
+            #         angle = right_angle
+            #         knee_angle = right_angle_knees
+            #     else:
+            #         angle = left_angle
+            #         knee_angle = left_angle_knees
 
-                if knee_angle < 100:
-                    print(angle)
-                    if angle > 120:
-                        position = "Down"
-                    elif angle < 50 and position == "Down":
-                        position = "Up"
-                        counter += 1
+            # if knee_angle < 120:
+            #     print(angle)
+            if right_angle > 120:
+                position = "Down"
+            elif right_angle < 90 and position == "Down":
+                position = "Up"
+                counter += 1
 
                     # if l_back_angle < 150 or r_back_angle < 150:
                     #     # put text to say that back is not straight
                     #     cv2.putText(image, "Back is not straight",
                     #                 (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2,
                     #                 cv2.LINE_AA)
-                    print(counter)
-                print(f"right: {landmarks[14].z}, left: {landmarks[13].z}, back: {r_back_angle} angle: {right_angle}")
+                #     print(counter)
+                # print(f"right: {landmarks[14].z}, left: {landmarks[13].z}, back: {r_back_angle} angle: {right_angle}")
 
 
         except:
