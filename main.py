@@ -87,22 +87,43 @@ def play(user_text):
 
 
 def options(user_text):
+
+    # basic font for user typed
+    base_font = pygame.font.Font(None, 120)
+    # create rectangle
+    input_rect = pygame.Rect(width / 2 - 250, height / 2 - 150, 500, 100)
+
+    color_active = pygame.Color('black')
+
+    color_passive = pygame.Color('chartreuse4')
+    color = color_passive
+    pygame.draw.rect(SCREEN, color, input_rect)
+
+    first = True
     active = False
+    mode = "Infinite"
+    num = "Enter Number"
+    num1 = 1
+    counter = ""
+    base_color1 = "#d7fcd4"
+    base_color2 = "#e3242b"
+
     while True:
         OPTIONS_MOUSE_POS = pygame.mouse.get_pos()
 
         SCREEN.fill("white")
 
         Progress_BUTTON = Button(image=pygame.image.load("Assets/Options Rect.png"),
-                             pos=(640, 250),
+                             pos=(640, 100),
                              text_input="Progress", font=get_font(70),
-                             base_color="#d7fcd4", hovering_color="White")
+                             base_color=base_color1, hovering_color="White")
         Progress_BUTTON.changeColor(OPTIONS_MOUSE_POS)
         Progress_BUTTON.update(SCREEN)
 
+
         Infinite_BUTTON = Button(
             image=pygame.image.load("Assets/Options Rect.png"), pos=(640, 400),
-            text_input="Infinite", font=get_font(70), base_color="#d7fcd4",
+            text_input="Infinite", font=get_font(70), base_color=base_color2,
             hovering_color="White")
 
         Infinite_BUTTON.changeColor(OPTIONS_MOUSE_POS)
@@ -121,19 +142,64 @@ def options(user_text):
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if OPTIONS_BACK.checkForInput(OPTIONS_MOUSE_POS):
-                    main_menu(user_text)
+                    if mode=="Infinite":
+                        counter = 0
+                    main_menu(user_text, int(counter))
                 if Progress_BUTTON.checkForInput(OPTIONS_MOUSE_POS):
-                    pass
-                    #Set to progress mode and activate text
+                    mode = "Progress"
+                    base_color1 = "#e3242b"
+                    base_color2 = "#d7fcd4"
+
                 if Infinite_BUTTON.checkForInput(OPTIONS_MOUSE_POS):
-                    #Set to infinite and deactivate text
-                    pass
+                    mode = "Infinite"
+                    base_color1 = "#d7fcd4"
+                    base_color2 = "#e3242b"
+
+                if input_rect.collidepoint(event.pos):
+                    active = True
+                else:
+                    active = False
+            if base_color1 == "#e3242b":
+                if event.type == pygame.KEYDOWN:
+
+                    # Check for backspace
+                    if event.key == pygame.K_BACKSPACE:
+
+                        # get text input from 0 to -1 i.e. end
+                        counter = counter[:-1]
+
+                    # Unicode standard is used for string
+                    # formation
+                    elif event.key == pygame.K_RETURN:
+                        main_menu(user_text,num)
+                    else:
+                        try:
+                            int(event.unicode)
+                            if len(counter) < 5:
+                                counter += event.unicode
+                        except:
+                            counter += ""
+            else:
+                counter = ""
 
 
+        if active:
+            color = color_active
+        else:
+            color = color_passive
+
+        text_surface = base_font.render(counter, True, (0, 0, 0))
+
+        SCREEN.blit(text_surface, (input_rect.x + 5, input_rect.y + 5))
+
+        input_rect.w = max(100, text_surface.get_width() + 10)
+        pygame.display.flip()
         pygame.display.update()
 
 
-def main_menu(user_text):
+
+
+def main_menu(user_text, num = 1):
     while True:
         SCREEN.blit(BG, (0, 0))
 
