@@ -21,7 +21,7 @@ def get_font(size):  # Returns Press-Start-2P in the desired size
     return pygame.font.Font("Assets/font.ttf", size)
 
 
-def play(user_text):
+def play(user_text, num):
     while True:
         PLAY_MOUSE_POS = pygame.mouse.get_pos()
 
@@ -65,19 +65,19 @@ def play(user_text):
                 if PLAY_BACK.checkForInput(PLAY_MOUSE_POS):
                     main_menu(user_text)
                 if PUSH_UPS.checkForInput(PLAY_MOUSE_POS):
-                    import pushup
-                    pushup.main()
+                    from pushup import runner
+                    runner(num=num)
                     pygame.quit()
                     sys.exit()
                 if SIT_UPS.checkForInput(PLAY_MOUSE_POS):
-                    import situp
-                    situp.main()
+                    from situp import runner
+                    runner(num=num)
                     pygame.quit()
                     sys.exit()
 
                 if SQUATS.checkForInput(PLAY_MOUSE_POS):
-                    import squat
-                    squat.main()
+                    from squat import runner
+                    runner(num=num)
                     pygame.quit()
                     sys.exit()
 
@@ -171,7 +171,7 @@ def options(user_text):
                     # Unicode standard is used for string
                     # formation
                     elif event.key == pygame.K_RETURN:
-                        main_menu(user_text,num)
+                        main_menu(user_text, int(counter))
                     else:
                         try:
                             int(event.unicode)
@@ -204,7 +204,7 @@ def main_menu(user_text, num = 1):
         SCREEN.blit(BG, (0, 0))
 
         MENU_MOUSE_POS = pygame.mouse.get_pos()
-        message = ("Welcome "+user_text)
+        message = (user_text)
         MENU_TEXT = get_font(75).render(message, True, "#170064")
         MENU_RECT = MENU_TEXT.get_rect(center=(640, 100))
 
@@ -233,7 +233,7 @@ def main_menu(user_text, num = 1):
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if PLAY_BUTTON.checkForInput(MENU_MOUSE_POS):
-                    play(user_text)
+                    play(user_text, num)
                 if OPTIONS_BUTTON.checkForInput(MENU_MOUSE_POS):
                     options(user_text)
                 if QUIT_BUTTON.checkForInput(MENU_MOUSE_POS):
@@ -287,6 +287,7 @@ def first_page():
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if ENTER_BUTTON.checkForInput(MENU_MOUSE_POS):
+                    user_text = "Welcome " + user_text
                     main_menu(user_text)
                 if QUIT_BUTTON.checkForInput(MENU_MOUSE_POS):
                     pygame.quit()
