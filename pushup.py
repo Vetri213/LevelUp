@@ -135,12 +135,12 @@ with md_pose.Pose(min_detection_confidence=0.5,
                         cv2.LINE_AA)
 
 
-            # cv2.circle(image1,
-            #            tuple(np.multiply(l_elbow, [width, height]).astype(int)),
-            #            int(20 * (90 - left_angle2) / 90), (255, 255, 255), -1)
-            # cv2.circle(image1,
-            #            tuple(np.multiply(r_elbow, [width, height]).astype(int)),
-            #            int(20 * (90 - right_angle2) / 90), (255, 255, 255), -1)
+            cv2.circle(image1,
+                        tuple(np.multiply(l_elbow, [width, height]).astype(int)),
+                        int(20 * (90 - left_angle2) / 90), (255, 255, 255), -1)
+            cv2.circle(image1,
+                        tuple(np.multiply(r_elbow, [width, height]).astype(int)),
+                        int(20 * (90 - right_angle2) / 90), (255, 255, 255), -1)
             cv2.circle(image1,
                        tuple(np.multiply(l_shoulder, [width, height]).astype(int)),
                        20, (255, 255, 255), 1)
@@ -181,8 +181,8 @@ with md_pose.Pose(min_detection_confidence=0.5,
                     #     cv2.putText(image, "Back is not straight",
                     #                 (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2,
                     #                 cv2.LINE_AA)
-                    print(counter)
-                print(f"right: {landmarks[14].z}, left: {landmarks[13].z}, back: {r_back_angle} angle: {right_angle}")
+                    #print(counter)
+                #print(f"right: {landmarks[14].z}, left: {landmarks[13].z}, back: {r_back_angle} angle: {right_angle}")
 
 
         except:

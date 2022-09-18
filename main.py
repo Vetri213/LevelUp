@@ -21,7 +21,7 @@ def get_font(size):  # Returns Press-Start-2P in the desired size
     return pygame.font.Font("Assets/font.ttf", size)
 
 
-def play():
+def play(user_text):
     while True:
         PLAY_MOUSE_POS = pygame.mouse.get_pos()
 
@@ -63,7 +63,7 @@ def play():
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if PLAY_BACK.checkForInput(PLAY_MOUSE_POS):
-                    main_menu()
+                    main_menu(user_text)
                 if PUSH_UPS.checkForInput(PLAY_MOUSE_POS):
                     import pushup
                     pushup.main()
@@ -167,7 +167,7 @@ def main_menu(user_text):
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if PLAY_BUTTON.checkForInput(MENU_MOUSE_POS):
-                    play()
+                    play(user_text)
                 if OPTIONS_BUTTON.checkForInput(MENU_MOUSE_POS):
                     options(user_text)
                 if QUIT_BUTTON.checkForInput(MENU_MOUSE_POS):
@@ -240,6 +240,8 @@ def first_page():
 
                 # Unicode standard is used for string
                 # formation
+                elif event.key == pygame.K_RETURN:
+                    main_menu(user_text)
                 else:
                     if first:
                         user_text = event.unicode
