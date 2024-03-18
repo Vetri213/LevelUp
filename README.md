@@ -1,4 +1,4 @@
-# Project Title: Fitness Tracker Application
+# Level Up: A Fitness Tracker Application
 
 ## Description:
 
